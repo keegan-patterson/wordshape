@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "phys_engine.h"
 
 void write_letter(sf::RenderWindow &window, sf::Text &text, const std::string &letter, const sf::Vector2f &position)
 {
@@ -32,6 +33,14 @@ int main()
             }
         }
 
+        // Business Logic
+        // Here you can add any game logic or updates needed before rendering
+        i_do_nothing();
+        auto xy = text.getPosition();
+        xy.y += 1;
+        text.setPosition(xy);
+
+        // Clear and Display
         window.clear();
         window.draw(text);
         window.display();
