@@ -9,10 +9,16 @@ void write_letter(sf::RenderWindow &window, sf::Text &text, const std::string &l
     text.setPosition(position);
 }
 
+void init_window(sf::RenderWindow &window)
+{
+    window.setFramerateLimit(144);
+    window.setVerticalSyncEnabled(true);
+}
+
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    window.setFramerateLimit(144);
+    init_window(window);
 
     sf::Font font("C:/Windows/Fonts/arial.ttf");
     sf::Text text = sf::Text(font);

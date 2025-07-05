@@ -26,7 +26,9 @@ class PhysItem
 public:
     PhysItem();
     AABB aabb;             // Axis aligned bounding box for the item
+    sf::Vector2f position; // Position of the item in the world
     sf::Vector2f velocity; // Velocity vector for the item
+    
 
     // Additional member functions can be added here
 };
