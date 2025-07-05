@@ -1,0 +1,11 @@
+Phase 1
+-------
+-Create a physics object with a letter associated
+-Place the object in space
+-<Framerate> times a second, update the position of the object based on velocity, gravity, and position
+-When the object hits the "floor", stop manually
+
+Phase 2
+-------
+-Impulse resolution
+-Make the "floor" an object with infinite mass
