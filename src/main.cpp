@@ -35,7 +35,6 @@ int main()
 
         // Business Logic
         // Here you can add any game logic or updates needed before rendering
-        i_do_nothing();
         auto xy = text.getPosition();
         xy.y += 1;
         text.setPosition(xy);

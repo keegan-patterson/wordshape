@@ -1,30 +1,28 @@
 #ifndef PHYS_ENGINE_H
 #define PHYS_ENGINE_H
 
+#include <SFML/Graphics.hpp>
+
 class AABB
 {
-    public:
-    AABB() = default;                            // Default constructor
-    float x_min, y_min; // Minimum x and y coordinates
-    float x_max, y_max; // Maximum x and y coordinates
+public:
+    AABB();
+    sf::Vector2f min; // Minimum corner of the AABB
+    sf::Vector2f max; // Maximum corner of the AABB
 };
 
 class PhysEngine
 {
+    sf::Vector2f gravity; // Gravity vector for the physics engine
     bool AABBvsAABB(AABB a, AABB b);
 };
 
 class PhysItem
 {
-    AABB aabb; // Axis aligned bounding box for the item
-
 public:
-    PhysItem() = default;                            // Default constructor
-    PhysItem(const PhysItem &) = default;            // Copy constructor
-    PhysItem(PhysItem &&) = default;                 // Move constructor
-    PhysItem &operator=(const PhysItem &) = default; // Copy assignment operator
-    PhysItem &operator=(PhysItem &&) = default;      // Move assignment operator
-    ~PhysItem() = default;                           // Destructor
+    PhysItem();
+    AABB aabb; // Axis aligned bounding box for the item
+    sf::Vector2f velocity; // Velocity vector for the item
 
     // Additional member functions can be added here
 };
