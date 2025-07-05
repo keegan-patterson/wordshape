@@ -2,6 +2,7 @@
 #define PHYS_ENGINE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class AABB
 {
@@ -13,6 +14,9 @@ public:
 
 class PhysEngine
 {
+public:
+    PhysEngine();
+    PhysEngine(sf::Vector2f gravity);
     sf::Vector2f gravity; // Gravity vector for the physics engine
     bool AABBvsAABB(AABB a, AABB b);
 };
@@ -21,7 +25,7 @@ class PhysItem
 {
 public:
     PhysItem();
-    AABB aabb; // Axis aligned bounding box for the item
+    AABB aabb;             // Axis aligned bounding box for the item
     sf::Vector2f velocity; // Velocity vector for the item
 
     // Additional member functions can be added here
