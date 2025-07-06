@@ -1,43 +1,20 @@
 #include <SFML/Graphics.hpp>
 #include "phys_engine.h"
-
-void write_letter(sf::RenderWindow &window, sf::Text &text, const std::string &letter, const sf::Vector2f &position)
-{
-    text.setString(letter);
-    text.setCharacterSize(100);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(position);
-}
-
-void init_window(sf::RenderWindow &window)
-{
-    window.setFramerateLimit(144);
-    window.setVerticalSyncEnabled(true);
-}
+#include "game_engine.h"
 
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
-    init_window(window);
+
+    GameEngine game_engine;
+    game_engine.init(window);
 
     sf::Font font("C:/Windows/Fonts/arial.ttf");
     sf::Text text = sf::Text(font);
 
     while (window.isOpen())
     {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-            {
-                window.close();
-            }
-            
-            if(event->is<sf::Event::TextEntered>())
-            {
-                const sf::Event::TextEntered* t_event = event->getIf<sf::Event::TextEntered>();
-                write_letter(window, text, std::string(1, static_cast<char>(t_event->unicode)), {100, 100});
-            }
-        }
+        game_engine.handleEvents(window, text);
 
         // Business Logic
         // Here you can add any game logic or updates needed before rendering
