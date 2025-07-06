@@ -2,6 +2,7 @@
 #define GAME_ENGINE_H
 
 #include <SFML/Graphics.hpp>
+#include "phys_engine.h"
 
 class GameEngine
 {
@@ -15,7 +16,7 @@ public:
     }
 
     // Handle events in the game loop
-    void handleEvents(sf::RenderWindow& window, sf::Text& text) {
+    void handleEvents(sf::RenderWindow& window, PhysItem& item, sf::Text& text) {
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
@@ -25,7 +26,9 @@ public:
                 text.setString(std::string(1, static_cast<char>(t_event->unicode)));
                 text.setCharacterSize(100);
                 text.setFillColor(sf::Color::White);
-                text.setPosition({100, 100});
+                text.setPosition({0, 0});
+                item.position = {100,100};
+                item.velocity = {0, 0};
             }
         }
     }

@@ -4,6 +4,13 @@
 AABB::AABB() :min({0, 0}), max({0, 0}) {}
 
 
+// PhysItem
+PhysItem::PhysItem(){
+    aabb = AABB();
+    velocity = {0, 0};
+}
+
+
 // PhysEngine
 PhysEngine::PhysEngine() : gravity({0, 0}) {}
 PhysEngine::PhysEngine(sf::Vector2f gravity) : gravity(gravity) {}
@@ -17,11 +24,4 @@ bool PhysEngine::AABBvsAABB(AABB a, AABB b)
         return false;
     // No separating axis found, therefore there is at least one overlapping axis
     return true;
-}
-
-
-// PhysItem
-PhysItem::PhysItem(){
-    aabb = AABB();
-    velocity = {0, 0};
 }
