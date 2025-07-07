@@ -33,11 +33,11 @@ public:
     PhysEngine(sf::Vector2f gravity);
     sf::Vector2f gravity; // Gravity vector for the physics engine
     bool AABBvsAABB(AABB a, AABB b);
-    void applyGravity(PhysItem& item, sf::Time deltaTime) {
+    void applyGravity(PhysItem* item, sf::Time deltaTime) {
         // Apply gravity to the item based on the time step
-        sf::Vector2f initialVelocity = item.velocity;
-        item.velocity += gravity * deltaTime.asSeconds();
-        item.position += ((item.velocity + initialVelocity) / 2.0f) * deltaTime.asSeconds();
+        sf::Vector2f initialVelocity = item->velocity;
+        item->velocity += gravity * deltaTime.asSeconds();
+        item->position += ((item->velocity + initialVelocity) / 2.0f) * deltaTime.asSeconds();
     }
 };
 

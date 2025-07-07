@@ -32,6 +32,19 @@ public:
             }
         }
     }
+
+    void tick(PhysEngine* phys_engine, PhysItem* item, sf::Text* text, sf::Clock* clock) {
+        // This function can be used to update the game state
+        phys_engine->applyGravity(item, clock->restart()); // Apply gravity to the item
+        text->setPosition(item->position); // Update text position to match item position
+    }
+
+    void draw(sf::RenderWindow& window, sf::Text& text) {
+        // Draw the item and text to the window
+        window.clear();
+        window.draw(text); // Draw the item text
+        window.display();
+    }
 };
 
 #endif // GAME_ENGINE_H

@@ -12,22 +12,20 @@ int main()
     sf::Font font("C:/Windows/Fonts/arial.ttf");
     sf::Text *text = new sf::Text(font);
 
-    sf::Clock clock;
-    PhysEngine phys_engine({0, 9.81f}); // Initialize physics engine with gravity
+    sf::Clock *clock = new sf::Clock(); // Create a clock to track time
+    PhysEngine *phys_engine = new PhysEngine({0, 9.81f}); // Initialize physics engine with gravity
     PhysItem *item = new PhysItem; // Create a physics item
 
     while (window.isOpen())
     {
+        // handle input events
         game_engine.handleEvents(window, *item, *text);
 
-        // Business Logic
-        // Here you can add any game logic or updates needed before rendering
-        phys_engine.applyGravity(*item, clock.restart()); // Apply gravity to the item
-        text->setPosition(item->position); // Update text position to match item position
+        // game logic
+        // eventually this will be passed an array of game objects
+        game_engine.tick(phys_engine, item, text, clock);
 
         // Clear and Display
-        window.clear();
-        window.draw(*text); // Draw the item text
-        window.display();
+        game_engine.draw(window, *text);
     }
 }
