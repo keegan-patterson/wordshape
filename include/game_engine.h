@@ -33,10 +33,12 @@ public:
         }
     }
 
-    void tick(PhysEngine* phys_engine, PhysItem* item, sf::Text* text, sf::Clock* clock) {
+    void tick(PhysEngine* phys_engine, std::vector<PhysItem*> entities, sf::Text* text, sf::Clock* clock) {
         // This function can be used to update the game state
-        phys_engine->applyGravity(item, clock->restart()); // Apply gravity to the item
-        text->setPosition(item->position); // Update text position to match item position
+        for (auto item : entities) {
+            phys_engine->applyGravity(item, clock->restart()); // Apply gravity to each item
+            text->setPosition(item->position); // Update text position to match item position
+        }
     }
 
     void draw(sf::RenderWindow& window, sf::Text& text) {
