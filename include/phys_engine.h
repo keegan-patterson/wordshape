@@ -50,7 +50,7 @@ public:
         aabb.max = position + base_aabb.max;
         return aabb;
     }
-
+    sf::RectangleShape rectangle; // Rectangle shape for rendering the item
 };
 
 class PhysEngine

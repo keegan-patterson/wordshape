@@ -11,6 +11,16 @@ PhysItem::PhysItem(Type item_type, std::string font_path){
     font = new sf::Font(font_path);
     text = new sf::Text(*font);
     this->item_type = item_type;
+    if (item_type == Type::TextBlock) {
+        // text->setString("A");
+        // text->setCharacterSize(100);
+        // text->setFillColor(sf::Color::White);
+        // text->setPosition({0, 0});
+    } else if (item_type == Type::Obstacle) {
+        rectangle.setSize(sf::Vector2f(100, 50));
+        rectangle.setOutlineColor(sf::Color::Red);
+        rectangle.setOutlineThickness(5);
+    }
 }
 
 
