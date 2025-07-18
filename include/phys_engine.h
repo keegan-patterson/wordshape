@@ -21,17 +21,36 @@ public:
         // Calculate the center of the AABB
         return (min + max) / 2.0f;
     }
+    bool is_set = false;
 };
 
 class PhysItem
 {
 public:
-    PhysItem();
-    AABB aabb;             // Axis aligned bounding box for the item
-    sf::Vector2f position; // Position of the item in the world
-    sf::Vector2f velocity; // Velocity vector for the item
-    float restitution = 0.5f; // Coefficient of restitution for the item
-    float mass = 1.0f; // Mass of the item, default is 1.0f
+    enum class Type {
+        TextBlock, // Represents a text block item
+        Obstacle // Represents an obstacle item
+    };
+
+    PhysItem(Type item_type, std::string font_path = "C:/Windows/Fonts/arial.ttf");
+    AABB base_aabb;                 // Axis aligned bounding box for the item
+    sf::Vector2f position;     // Position of the item in the world
+    sf::Vector2f starting_position;     // Position of the item in the world
+    sf::Vector2f velocity;     // Velocity vector for the item
+    sf::Vector2f starting_velocity;     // Velocity vector for the item
+    float restitution = 0.5f;  // Coefficient of restitution for the item
+    float mass = 1.0f;         // Mass of the item, default is 1.0f
+    sf::Font *font = nullptr;
+    sf::Text *text = nullptr;  // Text representation of the item, if applicable
+    Type item_type; // Type of the item, default is Obstacle
+    AABB getAABB() const {
+        // Return the AABB of the item
+        AABB aabb;
+        aabb.min = position + base_aabb.min;
+        aabb.max = position + base_aabb.max;
+        return aabb;
+    }
+
 };
 
 class PhysEngine
@@ -48,13 +67,13 @@ public:
         item->position += ((item->velocity + initialVelocity) / 2.0f) * deltaTime.asSeconds();
     }
 
-    void ResolveCollision( PhysItem A, PhysItem B )
+    void ResolveCollision( PhysItem *A, PhysItem *B )
     {
         // Calculate relative velocity 
-        sf::Vector2f rv = B.velocity - A.velocity;
+        sf::Vector2f rv = B->velocity - A->velocity;
 
         // Calculate relative velocity in terms of the normal direction 
-        sf::Vector2f normal = (B.aabb.getCenter() - A.aabb.getCenter()).normalized();
+        sf::Vector2f normal = (B->getAABB().getCenter() - A->getAABB().getCenter()).normalized();
         float velAlongNormal = PhysHelpers::dot(rv, normal);
 
         // Do not resolve if velocities are separating 
@@ -62,16 +81,16 @@ public:
             return;
 
         // Calculate restitution 
-        float e = std::min( A.restitution, B.restitution);
+        float e = std::min( A->restitution, B->restitution);
 
         // Calculate impulse scalar 
         float j = -(1 + e) * velAlongNormal;
-        j /= 1 / A.mass + 1 / B.mass;
+        j /= 1 / A->mass + 1 / B->mass;
   
         // Apply impulse 
         sf::Vector2f impulse = j * normal;
-        A.velocity -= 1 / A.mass * impulse;
-        B.velocity += 1 / B.mass * impulse;
+        A->velocity -= 1 / A->mass * impulse;
+        B->velocity += 1 / B->mass * impulse;
     }
 };
 

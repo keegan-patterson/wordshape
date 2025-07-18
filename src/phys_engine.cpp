@@ -5,9 +5,12 @@ AABB::AABB() :min({0, 0}), max({0, 0}) {}
 
 
 // PhysItem
-PhysItem::PhysItem(){
-    aabb = AABB();
+PhysItem::PhysItem(Type item_type, std::string font_path){
+    base_aabb = AABB();
     velocity = {0, 0};
+    font = new sf::Font(font_path);
+    text = new sf::Text(*font);
+    this->item_type = item_type;
 }
 
 
