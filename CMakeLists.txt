@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(WordShape
     src/main.cpp 
+    src/game_engine.cpp 
     src/phys_engine.cpp)
 target_include_directories(WordShape PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_compile_features(WordShape PRIVATE cxx_std_17)
