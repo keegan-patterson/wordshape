@@ -1,28 +1,30 @@
 #include "game_engine.h"
 
-void GameEngine::init(sf::RenderWindow &window)
+void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
 {
     window.setFramerateLimit(144);
     window.setVerticalSyncEnabled(true);
 
+    this->debug_mode = debug_mode; // Set the debug mode based on the parameter
+
     entities.clear(); // Clear any existing entities
+
     PhysItem *item1 = new PhysItem(PhysItem::Type::TextBlock);
     item1->starting_position = {100, 100};
     item1->starting_velocity = {10, 0};
-    item1->base_aabb.min = {-10, -10};
-    item1->base_aabb.max = {10, 10};
+    item1->setAABB({0, 0}, {50, 100});
+
     PhysItem *item2 = new PhysItem(PhysItem::Type::TextBlock);
-    item2->starting_position = {150, 100};
+    item2->starting_position = {200, 100};
     item2->starting_velocity = {-10, 0};
-    item2->base_aabb.min = {-10, -10};
-    item2->base_aabb.max = {10, 10};
+    item2->setAABB({0, 0}, {50, 100});
+
     PhysItem *item3 = new PhysItem(PhysItem::Type::Obstacle);
     item3->starting_position = {0, 1000};
-    item3->position = item3->starting_position; // Set position to starting position
+    item3->position = item3->starting_position;
     item3->starting_velocity = {0, 0};
-    item3->velocity = item3->starting_velocity; // Set velocity to starting velocity
-    item3->base_aabb.min = {-960, -5};
-    item3->base_aabb.max = {960, 5};
+    item3->velocity = item3->starting_velocity;
+    item3->setAABB({-960, -5}, {960, 5});
     item3->mass = 1000000.0f;       // Set a large mass for the obstacle to make it immovable
     item3->restitution = 0.5f;      // Set restitution to 0
     item3->base_aabb.is_set = true; // Mark AABB as set
@@ -79,7 +81,6 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
         {
             phys_engine->applyGravity(item, deltaTime); // Apply gravity to each item
         }
-        item->text->setPosition(item->position); // Update text position to match item position
     }
 }
 
@@ -91,15 +92,12 @@ void GameEngine::draw(sf::RenderWindow &window)
     {
         if (entity->item_type == PhysItem::Type::TextBlock && entity->text)
         {
+            entity->text->setPosition(entity->position); // Update text position to match item position
             window.draw(*entity->text); // Draw the text representation of the item
         }
-        if (entity->item_type == PhysItem::Type::Obstacle)
+        if (debug_mode || entity->item_type == PhysItem::Type::Obstacle)
         {
             entity->rectangle.setPosition(entity->position);
-            entity->rectangle.setSize(sf::Vector2f(entity->base_aabb.max.x - entity->base_aabb.min.x, entity->base_aabb.max.y - entity->base_aabb.min.y));
-            entity->rectangle.setFillColor(sf::Color::Red);
-            entity->rectangle.setOutlineColor(sf::Color::Red);
-            entity->rectangle.setOutlineThickness(5);
             window.draw(entity->rectangle); // Draw the rectangle representation of the obstacle
         }
     }

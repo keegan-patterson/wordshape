@@ -8,12 +8,13 @@ class GameEngine
 {
 private:
     std::vector<PhysItem*> entities; // Comprehensive list of game objects with physics
+    bool debug_mode = false;
 
 public:
     GameEngine() = default;
 
     // Initialize the game engine with a window
-    void init(sf::RenderWindow& window);
+    void init(sf::RenderWindow& window, bool debug_mode = false);
 
     // Handle events in the game loop
     void handleEvents(sf::RenderWindow& window);

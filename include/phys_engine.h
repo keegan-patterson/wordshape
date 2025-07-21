@@ -33,13 +33,16 @@ public:
     };
 
     PhysItem(Type item_type, std::string font_path = "C:/Windows/Fonts/arial.ttf");
+
     AABB base_aabb;                 // Axis aligned bounding box for the item
+
     sf::Vector2f position;     // Position of the item in the world
     sf::Vector2f starting_position;     // Position of the item in the world
     sf::Vector2f velocity;     // Velocity vector for the item
     sf::Vector2f starting_velocity;     // Velocity vector for the item
     float restitution = 0.5f;  // Coefficient of restitution for the item
     float mass = 1.0f;         // Mass of the item, default is 1.0f
+
     sf::Font *font = nullptr;
     sf::Text *text = nullptr;  // Text representation of the item, if applicable
     Type item_type; // Type of the item, default is Obstacle
@@ -49,6 +52,11 @@ public:
         aabb.min = position + base_aabb.min;
         aabb.max = position + base_aabb.max;
         return aabb;
+    }
+    void setAABB(sf::Vector2f min, sf::Vector2f max){
+        base_aabb.min = min;
+        base_aabb.max = max;
+        rectangle.setSize(max - min);
     }
     sf::RectangleShape rectangle; // Rectangle shape for rendering the item
 };
