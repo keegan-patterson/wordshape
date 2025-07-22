@@ -63,11 +63,14 @@ public:
 
 class PhysEngine
 {
+    int OverlappingAxis(AABB a, AABB b);
+    sf::Vector2f NormalVectorFromAxis(int axis);
 public:
     PhysEngine();
     PhysEngine(sf::Vector2f gravity);
     sf::Vector2f gravity; // Gravity vector for the physics engine
     bool AABBvsAABB(AABB a, AABB b);
+
     void applyGravity(PhysItem* item, sf::Time deltaTime) {
         // Apply gravity to the item based on the time step
         sf::Vector2f initialVelocity = item->velocity;
@@ -80,8 +83,17 @@ public:
         // Calculate relative velocity 
         sf::Vector2f rv = B->velocity - A->velocity;
 
-        // Calculate relative velocity in terms of the normal direction 
-        sf::Vector2f normal = (B->getAABB().getCenter() - A->getAABB().getCenter()).normalized();
+        // Calculate relative velocity in terms of the normal direction
+        sf::Vector2f normal;
+        if(A->item_type == PhysItem::Type::Obstacle || B->item_type == PhysItem::Type::Obstacle){
+            // Resolve collison with obstacles differently
+            // Find which side collision is happening on
+            int axis = OverlappingAxis(A->getAABB(), B->getAABB());
+            normal = NormalVectorFromAxis(axis);
+        }
+        else{
+            normal = (B->getAABB().getCenter() - A->getAABB().getCenter()).normalized();
+        }
         float velAlongNormal = PhysHelpers::dot(rv, normal);
 
         // Do not resolve if velocities are separating 

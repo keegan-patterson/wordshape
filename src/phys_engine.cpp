@@ -20,7 +20,7 @@ PhysItem::PhysItem(Type item_type, std::string font_path){
         // Debugging aabbs
         rectangle.setOutlineColor(sf::Color::Red);
         rectangle.setOutlineThickness(1);
-        rectangle.setFillColor(sf::Color::Transparent);
+        rectangle.setFillColor(sf::Color::Transparent );
     } else if (item_type == Type::Obstacle) {
         rectangle.setSize(sf::Vector2f(100, 50));
         rectangle.setOutlineColor(sf::Color::Red);
@@ -43,4 +43,38 @@ bool PhysEngine::AABBvsAABB(AABB a, AABB b)
         return false;
     // No separating axis found, therefore there is at least one overlapping axis
     return true;
+}
+
+int PhysEngine::OverlappingAxis(AABB a, AABB b){
+    if(a.max.x > b.min.x){
+        if(a.min.x < b.max.x){
+            return 1; // A overlaps B on X axis, A is to the left of B
+        }
+    }
+    if(a.max.y > b.min.y){
+        if(a.min.y < b.max.y){
+            return 2; // A overlaps B on Y axis, A is above B
+        }
+    }
+    if(b.max.x > a.min.x){
+        if(b.min.x < a.max.x){
+            return 3; // B overlaps A on X axis, B is to the left of A
+        }
+    }
+    if (b.max.y > a.min.y){
+        if(b.min.y < a.max.y){
+            return 4; // B overlaps A on Y axis, B is above A
+        }
+    }
+    return 0;
+}
+
+sf::Vector2f PhysEngine::NormalVectorFromAxis(int axis) {
+    switch (axis) {
+        case 1: return {1, 0}; // A overlaps B on X axis, A is to the left of B
+        case 2: return {0, 1}; // A overlaps B on Y axis, A is above B
+        case 3: return {-1, 0}; // B overlaps A on X axis, B is to the left of A
+        case 4: return {0, -1}; // B overlaps A on Y axis, B is above A
+        default: return {0, 0}; // No valid axis
+    }
 }
