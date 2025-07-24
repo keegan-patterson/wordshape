@@ -45,28 +45,9 @@ bool PhysEngine::AABBvsAABB(AABB a, AABB b)
     return true;
 }
 
+// This will be replaced with SAT
 int PhysEngine::OverlappingAxis(AABB a, AABB b){
-    if(a.max.x > b.min.x){
-        if(a.min.x < b.max.x){
-            return 1; // A overlaps B on X axis, A is to the left of B
-        }
-    }
-    if(a.max.y > b.min.y){
-        if(a.min.y < b.max.y){
-            return 2; // A overlaps B on Y axis, A is above B
-        }
-    }
-    if(b.max.x > a.min.x){
-        if(b.min.x < a.max.x){
-            return 3; // B overlaps A on X axis, B is to the left of A
-        }
-    }
-    if (b.max.y > a.min.y){
-        if(b.min.y < a.max.y){
-            return 4; // B overlaps A on Y axis, B is above A
-        }
-    }
-    return 0;
+    return 4;
 }
 
 sf::Vector2f PhysEngine::NormalVectorFromAxis(int axis) {

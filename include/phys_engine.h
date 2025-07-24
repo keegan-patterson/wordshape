@@ -84,6 +84,7 @@ public:
         sf::Vector2f rv = B->velocity - A->velocity;
 
         // Calculate relative velocity in terms of the normal direction
+        // TODO: This needs to be replaced with SAT (Separating Axis Theorem)
         sf::Vector2f normal;
         if(A->item_type == PhysItem::Type::Obstacle || B->item_type == PhysItem::Type::Obstacle){
             // Resolve collison with obstacles differently
