@@ -124,14 +124,13 @@ public:
         B->velocity += 1 / B->mass * impulse;
     }
 
-    void SeparatingAxisTheorem()
+    void SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
 
-        Axis[] axes = // get the axes to test;
-                      // loop over the axes
-            for (int i = 0; i < axes.length; i++)
+        sf::Vector2f axes[2]; //For the moment only use two axes because bounding boxes have 2 axes
+        for (int i = 0; i < std::size(axes); i++)
         {
-            Axis axis = axes[i];
+            sf::Vector2f axis = axes[i];
             // project both shapes onto the axis
             Projection p1 = shape1.project(axis);
             Projection p2 = shape2.project(axis);
