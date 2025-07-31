@@ -65,7 +65,8 @@ public:
         rectangle.setSize(max - min);
     }
 
-    void definePolygonHexagon(){
+    void definePolygonHexagon()
+    {
         polygon.setPointCount(6);
         polygon.setPoint(0, sf::Vector2f(0, 50));
         polygon.setPoint(1, sf::Vector2f(25, 0));
@@ -78,7 +79,7 @@ public:
     }
 
     sf::RectangleShape rectangle; // Rectangle shape for rendering the item
-    sf::ConvexShape polygon; // Polygon shape for rendering the item, if applicable
+    sf::ConvexShape polygon;      // Polygon shape for rendering the item, if applicable
 };
 
 class PhysEngine
@@ -141,20 +142,21 @@ public:
     void SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
 
-        sf::Vector2f axes[2]; //For the moment only use two axes because bounding boxes have 2 axes
-        for (int i = 0; i < std::size(axes); i++)
-        {
-            sf::Vector2f axis = axes[i];
-            // project both shapes onto the axis
-            Projection p1 = shape1.project(axis);
-            Projection p2 = shape2.project(axis);
-            // do the projections overlap?
-            if (!p1.overlap(p2))
-            {
-                // then we can guarantee that the shapes do not overlap
-                return false;
-            }
-        }
+        // sf::Vector2f axes[2]; //For the moment only use two axes because bounding boxes have 2 axes
+        // for (int i = 0; i < std::size(axes); i++)
+        // {
+        //     sf::Vector2f axis = axes[i];
+        //     // project both shapes onto the axis
+        //     Projection p1 = shape1.project(axis);
+        //     Projection p2 = shape2.project(axis);
+        //     // do the projections overlap?
+        //     if (!p1.overlap(p2))
+        //     {
+        //         // then we can guarantee that the shapes do not overlap
+        //         return false;
+        //     }
+        // }
     }
+};
 
 #endif // PHYS_ENGINE_H
