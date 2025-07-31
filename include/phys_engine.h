@@ -58,7 +58,21 @@ public:
         base_aabb.max = max;
         rectangle.setSize(max - min);
     }
+
+    void definePolygonHexagon(){
+        polygon.setPointCount(6);
+        polygon.setPoint(0, sf::Vector2f(0, 50));
+        polygon.setPoint(1, sf::Vector2f(25, 0));
+        polygon.setPoint(2, sf::Vector2f(75, 0));
+        polygon.setPoint(3, sf::Vector2f(100, 50));
+        polygon.setPoint(4, sf::Vector2f(50, 100));
+        polygon.setPoint(5, sf::Vector2f(0, 50));
+        polygon.setFillColor(sf::Color::Green);
+        polygon.setOutlineColor(sf::Color::Black);
+    }
+
     sf::RectangleShape rectangle; // Rectangle shape for rendering the item
+    sf::ConvexShape polygon; // Polygon shape for rendering the item, if applicable
 };
 
 class PhysEngine

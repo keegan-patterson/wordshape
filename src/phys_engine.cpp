@@ -17,6 +17,7 @@ PhysItem::PhysItem(Type item_type, std::string font_path){
         // text->setFillColor(sf::Color::White);
         // text->setPosition({0, 0});
 
+        definePolygonHexagon();
         // Debugging aabbs
         rectangle.setOutlineColor(sf::Color::Red);
         rectangle.setOutlineThickness(1);

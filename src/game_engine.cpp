@@ -94,6 +94,8 @@ void GameEngine::draw(sf::RenderWindow &window)
         {
             entity->text->setPosition(entity->position); // Update text position to match item position
             window.draw(*entity->text); // Draw the text representation of the item
+            entity->polygon.setPosition(entity->position);
+            window.draw(entity->polygon); // Draw the polygon representation of the item
         }
         if (debug_mode || entity->item_type == PhysItem::Type::Obstacle)
         {
