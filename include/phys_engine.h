@@ -83,6 +83,47 @@ public:
         polygon.setOutlineColor(sf::Color::Black);
     }
 
+    sf::Vector2f getProjection(const sf::Vector2f &axis) const
+    {
+        float min = 0.0f;
+        float max = 0.0f;
+        // Project the polygon onto the given axis
+        for (int i = 0; i < polygon.getPointCount(); i++)
+        {
+            sf::Vector2f point = polygon.getPoint(i);
+            point = position + point; // Transform point to world coordinates
+            float projection = PhysHelpers::dot(point, axis);
+            if (i == 0)
+            {
+                min = projection;
+                max = projection;
+            }
+            else
+            {
+                if (projection < min)
+                    min = projection;
+                if (projection > max)
+                    max = projection;
+            }
+        }
+        return sf::Vector2f(min, max);
+    }
+
+    std::vector<sf::Vector2f> getTestableAxes() const
+    {
+        // Get the axes for the polygon
+        std::vector<sf::Vector2f> axes;
+        for (int i = 0; i < polygon.getPointCount(); i++)
+        {
+            sf::Vector2f point1 = polygon.getPoint(i);
+            sf::Vector2f point2 = polygon.getPoint((i + 1) % polygon.getPointCount());
+            sf::Vector2f edge = point2 - point1;
+            // Perpendicular vector to the edge
+            sf::Vector2f axis(-edge.y, edge.x);
+            axes.push_back(axis);
+        }
+        return axes;
+    }
 };
 
 class PhysEngine
@@ -142,23 +183,69 @@ public:
         B->velocity += 1 / B->mass * impulse;
     }
 
-    void SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
+    std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
 
-        // sf::Vector2f axes[2]; //For the moment only use two axes because bounding boxes have 2 axes
-        // for (int i = 0; i < std::size(axes); i++)
-        // {
-        //     sf::Vector2f axis = axes[i];
-        //     // project both shapes onto the axis
-        //     Projection p1 = shape1.project(axis);
-        //     Projection p2 = shape2.project(axis);
-        //     // do the projections overlap?
-        //     if (!p1.overlap(p2))
-        //     {
-        //         // then we can guarantee that the shapes do not overlap
-        //         return false;
-        //     }
-        // }
+        double overlap = std::numeric_limits<double>::max();
+        sf::Vector2f smallest;
+        std::vector<sf::Vector2f> axes1 = shape1.getTestableAxes();
+        std::vector<sf::Vector2f> axes2 = shape2.getTestableAxes();
+        // loop over the axes1
+        for (int i = 0; i < axes1.size(); i++)
+        {
+            sf::Vector2f axis = axes1[i];
+            // project both shapes onto the axis
+            sf::Vector2f p1 = shape1.getProjection(axis);
+            sf::Vector2f p2 = shape2.getProjection(axis);
+            // do the projections overlap?
+            if (p1.x >= p2.y || p2.x >= p1.y)
+            {
+                // then we can guarantee that the shapes do not overlap
+                return std::optional<sf::Vector2f>();            
+            }
+            else
+            {
+                // get the overlap
+                double o = p1.getOverlap(p2);
+                // check for minimum
+                if (o < overlap)
+                {
+                    // then set this one as the smallest
+                    overlap = o;
+                    smallest = axis;
+                }
+            }
+        }
+        // loop over the axes2
+        for (int i = 0; i < axes2.length; i++)
+        {
+            Axis axis = axes2[i];
+            // project both shapes onto the axis
+            Projection p1 = shape1.project(axis);
+            Projection p2 = shape2.project(axis);
+            // do the projections overlap?
+            if (!p1.overlap(p2))
+            {
+                // then we can guarantee that the shapes do not overlap
+                return false;
+            }
+            else
+            {
+                // get the overlap
+                double o = p1.getOverlap(p2);
+                // check for minimum
+                if (o < overlap)
+                {
+                    // then set this one as the smallest
+                    overlap = o;
+                    smallest = axis;
+                }
+            }
+        }
+        MTV mtv = new MTV(smallest, overlap);
+        // if we get here then we know that every axis had overlap on it
+        // so we can guarantee an intersection
+        return mtv;
     }
 };
 
