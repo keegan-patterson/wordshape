@@ -217,12 +217,12 @@ public:
             }
         }
         // loop over the axes2
-        for (int i = 0; i < axes2.length; i++)
+        for (int i = 0; i < axes2.size(); i++)
         {
-            Axis axis = axes2[i];
+            sf::Vector2f axis = axes2[i];
             // project both shapes onto the axis
-            Projection p1 = shape1.project(axis);
-            Projection p2 = shape2.project(axis);
+            sf::Vector2f p1 = shape1.getProjection(axis);
+            sf::Vector2f p2 = shape2.getProjection(axis);
             // do the projections overlap?
             if (!p1.overlap(p2))
             {
