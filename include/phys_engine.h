@@ -186,7 +186,7 @@ public:
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
 
-        double overlap = std::numeric_limits<double>::max();
+        float overlap = std::numeric_limits<float>::max();
         sf::Vector2f smallest;
         std::vector<sf::Vector2f> axes1 = shape1.getTestableAxes();
         std::vector<sf::Vector2f> axes2 = shape2.getTestableAxes();
@@ -206,7 +206,13 @@ public:
             else
             {
                 // get the overlap
-                double o = p1.getOverlap(p2);
+                float o;
+                if(p1.x < p2.y){
+                    o = p2.y - p1.x;
+                } else {
+                    o = p1.y - p2.x;
+                }
+                
                 // check for minimum
                 if (o < overlap)
                 {
@@ -217,22 +223,28 @@ public:
             }
         }
         // loop over the axes2
-        for (int i = 0; i < axes2.length; i++)
+        for (int i = 0; i < axes2.size(); i++)
         {
-            Axis axis = axes2[i];
+            sf::Vector2f axis = axes2[i];
             // project both shapes onto the axis
-            Projection p1 = shape1.project(axis);
-            Projection p2 = shape2.project(axis);
+            sf::Vector2f p1 = shape1.getProjection(axis);
+            sf::Vector2f p2 = shape2.getProjection(axis);
             // do the projections overlap?
-            if (!p1.overlap(p2))
+            if (p1.x >= p2.y || p2.x >= p1.y)
             {
                 // then we can guarantee that the shapes do not overlap
-                return false;
+                return std::optional<sf::Vector2f>();            
             }
             else
             {
                 // get the overlap
-                double o = p1.getOverlap(p2);
+                float o;
+                if(p1.x < p2.y){
+                    o = p2.y - p1.x;
+                } else {
+                    o = p1.y - p2.x;
+                }
+                
                 // check for minimum
                 if (o < overlap)
                 {
@@ -242,7 +254,7 @@ public:
                 }
             }
         }
-        MTV mtv = new MTV(smallest, overlap);
+        sf::Vector2f mtv = smallest.normalized() * overlap;
         // if we get here then we know that every axis had overlap on it
         // so we can guarantee an intersection
         return mtv;
