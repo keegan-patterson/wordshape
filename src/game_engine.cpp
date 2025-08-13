@@ -72,9 +72,19 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
     {
         for (auto other_item : entities)
         {
-            if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()) && item->base_aabb.is_set && other_item->base_aabb.is_set)
+            if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
             {
-                phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
+                if (item->base_aabb.is_set && other_item->base_aabb.is_set)
+                {
+                    std::optional<sf::Vector2f> mtv = phys_engine->SeparatingAxisTheorem(*item, *other_item);
+                    if (mtv.has_value())
+                    {
+                        // Move the items apart based on the minimum translation vector
+                        item->position += *mtv;
+                        other_item->position -= *mtv;
+                    }
+                    //phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
+                }
             }
         }
         if (item->item_type == PhysItem::Type::TextBlock)
@@ -93,7 +103,7 @@ void GameEngine::draw(sf::RenderWindow &window)
         if (entity->item_type == PhysItem::Type::TextBlock && entity->text)
         {
             entity->text->setPosition(entity->position); // Update text position to match item position
-            window.draw(*entity->text); // Draw the text representation of the item
+            window.draw(*entity->text);                  // Draw the text representation of the item
             entity->polygon.setPosition(entity->position);
             window.draw(entity->polygon); // Draw the polygon representation of the item
         }
