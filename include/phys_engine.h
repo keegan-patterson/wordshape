@@ -114,7 +114,13 @@ public:
     {
         // Get the axes for the polygon
         std::vector<sf::Vector2f> axes;
-        for (int i = 0; i < polygon.getPointCount(); i++)
+        int pointsToTraverse = polygon.getPointCount();
+        if(polygon.getPoint(polygon.getPointCount() - 1) == polygon.getPoint(0))
+        {
+            pointsToTraverse--; // Remove the last point if it is the same as the first
+        }
+
+        for (int i = 0; i < pointsToTraverse; i++)
         {
             sf::Vector2f point1 = polygon.getPoint(i);
             sf::Vector2f point2 = polygon.getPoint((i + 1) % polygon.getPointCount());

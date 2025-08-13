@@ -74,8 +74,12 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
         {
             if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
             {
+                std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
                 if (item->base_aabb.is_set && other_item->base_aabb.is_set)
                 {
+                    std::cout << "Collision detected between items at positions: "
+                              << item->position.x << ", " << item->position.y << " and "
+                              << other_item->position.x << ", " << other_item->position.y << std::endl;
                     std::optional<sf::Vector2f> mtv = phys_engine->SeparatingAxisTheorem(*item, *other_item);
                     if (mtv.has_value())
                     {
