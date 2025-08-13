@@ -73,13 +73,13 @@ public:
     void definePolygonHexagon()
     {
         polygon.setPointCount(7);
-        polygon.setPoint(0, sf::Vector2f(-25, 0));
-        polygon.setPoint(1, sf::Vector2f(25, 0));
-        polygon.setPoint(2, sf::Vector2f(50, 37.5));
-        polygon.setPoint(3, sf::Vector2f(25, 75));
-        polygon.setPoint(4, sf::Vector2f(-25, 75));
-        polygon.setPoint(5, sf::Vector2f(-50, 37.5));
-        polygon.setPoint(6, sf::Vector2f(-25, 0));
+        polygon.setPoint(0, sf::Vector2f(25, 0));
+        polygon.setPoint(1, sf::Vector2f(75, 0));
+        polygon.setPoint(2, sf::Vector2f(100, 37.5));
+        polygon.setPoint(3, sf::Vector2f(75, 75));
+        polygon.setPoint(4, sf::Vector2f(25, 75));
+        polygon.setPoint(5, sf::Vector2f(0, 37.5));
+        polygon.setPoint(6, sf::Vector2f(25, 0));
         polygon.setFillColor(sf::Color::Green);
         polygon.setOutlineColor(sf::Color::Black);
     }

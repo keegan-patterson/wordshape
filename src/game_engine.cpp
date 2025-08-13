@@ -10,14 +10,14 @@ void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
     entities.clear(); // Clear any existing entities
 
     PhysItem *item1 = new PhysItem(PhysItem::Type::TextBlock);
-    item1->starting_position = {100, 100};
+    item1->starting_position = {0, 100};
     item1->starting_velocity = {10, 0};
-    item1->setAABB({0, 0}, {50, 100});
+    item1->setAABB({-50, 0}, {50, 100});
 
     PhysItem *item2 = new PhysItem(PhysItem::Type::TextBlock);
-    item2->starting_position = {200, 100};
+    item2->starting_position = {300, 100};
     item2->starting_velocity = {-10, 0};
-    item2->setAABB({0, 0}, {50, 100});
+    item2->setAABB({-50, 0}, {50, 100});
 
     PhysItem *item3 = new PhysItem(PhysItem::Type::Obstacle);
     item3->starting_position = {0, 1000};
@@ -84,8 +84,8 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                     if (mtv.has_value())
                     {
                         // Move the items apart based on the minimum translation vector
-                        item->position += *mtv;
-                        other_item->position -= *mtv;
+                        item->velocity += *mtv;
+                        other_item->velocity -= *mtv;
                     }
                     //phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
                 }
