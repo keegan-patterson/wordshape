@@ -23,7 +23,8 @@ PhysItem::PhysItem(Type item_type, std::string font_path){
         rectangle.setOutlineThickness(1);
         rectangle.setFillColor(sf::Color::Transparent );
     } else if (item_type == Type::Obstacle) {
-        rectangle.setSize(sf::Vector2f(100, 50));
+        definePolygonRectangle({{-960, 5}, {960, 5}, {960, -5}, {-960, -5}});
+        // rectangle.setSize(sf::Vector2f(100, 50));
         rectangle.setOutlineColor(sf::Color::Red);
         rectangle.setOutlineThickness(5);
         rectangle.setFillColor(sf::Color::Red);

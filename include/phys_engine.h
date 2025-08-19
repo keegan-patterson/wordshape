@@ -84,6 +84,18 @@ public:
         polygon.setOutlineColor(sf::Color::Black);
     }
 
+    void definePolygonRectangle(std::vector<sf::Vector2f> points)
+    {
+        polygon.setPointCount(5);
+        polygon.setPoint(0, points[0]);
+        polygon.setPoint(1, points[1]);
+        polygon.setPoint(2, points[2]);
+        polygon.setPoint(3, points[3]);
+        polygon.setPoint(4, points[0]); // Close the polygon
+        polygon.setFillColor(sf::Color::Green);
+        polygon.setOutlineColor(sf::Color::Black);
+    }
+
     sf::Vector2f getProjection(const sf::Vector2f &axis) const
     {
         float min = 0.0f;

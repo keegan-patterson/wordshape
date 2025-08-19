@@ -74,7 +74,7 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
         {
             if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
             {
-                std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
+                // std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
                 if (item->base_aabb.is_set && other_item->base_aabb.is_set)
                 {
                     std::cout << "Collision detected between items at positions: "
@@ -84,8 +84,12 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                     if (mtv.has_value())
                     {
                         // Move the items apart based on the minimum translation vector
-                        item->velocity += *mtv;
-                        other_item->velocity -= *mtv;
+                        if(item->item_type != PhysItem::Type::Obstacle){
+                            item->velocity += *mtv;
+                        }
+                        if(other_item->item_type != PhysItem::Type::Obstacle){
+                            other_item->velocity -= *mtv;
+                        }
                     }
                     //phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
                 }
