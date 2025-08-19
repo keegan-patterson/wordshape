@@ -264,7 +264,7 @@ public:
         sf::Vector2f mtv = smallest.normalized() * overlap;
         // if we get here then we know that every axis had overlap on it
         // so we can guarantee an intersection
-        std::cout << "SAT: Overlap found with minimum translation vector: " << mtv.x << ", " << mtv.y << std::endl;
+        // std::cout << "SAT: Overlap found with minimum translation vector: " << mtv.x << ", " << mtv.y << std::endl;
         return mtv;
     }
 };
