@@ -1,5 +1,27 @@
 #include "game_engine.h"
 
+void GameEngine::buildBoundaries()
+{
+    PhysItem *boundary1 = new PhysItem(PhysItem::Type::Obstacle);
+    boundary1->position = {0, 1000};
+    boundary1->velocity = {0, 0};
+    boundary1->setAABB({-960, -5}, {960, 5});
+    boundary1->mass = 1000000.0f;       
+    boundary1->restitution = 0.5f;      
+    boundary1->base_aabb.is_set = true; 
+
+    PhysItem *boundary2 = new PhysItem(PhysItem::Type::Obstacle);
+    boundary2->position = {10, 0}; 
+    boundary2->velocity = {0, 0};
+    boundary2->setAABB({-5, -540}, {5, 540});
+    boundary2->mass = 1000000.0f;       
+    boundary2->restitution = 0.5f;      
+    boundary2->base_aabb.is_set = true; 
+
+    this->entities.push_back(boundary1); 
+    this->entities.push_back(boundary2); 
+}
+
 void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
 {
     window.setFramerateLimit(144);
@@ -7,7 +29,9 @@ void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
 
     this->debug_mode = debug_mode; // Set the debug mode based on the parameter
 
-    entities.clear(); // Clear any existing entities
+    this->entities.clear(); // Clear any existing entities
+
+    buildBoundaries();
 
     PhysItem *item1 = new PhysItem(PhysItem::Type::TextBlock);
     item1->starting_position = {0, 100};
@@ -19,19 +43,8 @@ void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
     item2->starting_velocity = {-10, 0};
     item2->setAABB({-50, 0}, {50, 100});
 
-    PhysItem *item3 = new PhysItem(PhysItem::Type::Obstacle);
-    item3->starting_position = {0, 1000};
-    item3->position = item3->starting_position;
-    item3->starting_velocity = {0, 0};
-    item3->velocity = item3->starting_velocity;
-    item3->setAABB({-960, -5}, {960, 5});
-    item3->mass = 1000000.0f;       // Set a large mass for the obstacle to make it immovable
-    item3->restitution = 0.5f;      // Set restitution to 0
-    item3->base_aabb.is_set = true; // Mark AABB as set
-
-    entities.push_back(item1); // Add the item to the list of entities
-    entities.push_back(item2); // Add the item to the list of entities
-    entities.push_back(item3); // Add the obstacle to the list of entities
+    this->entities.push_back(item1); // Add the item to the list of entities
+    this->entities.push_back(item2); // Add the item to the list of entities
 }
 
 void GameEngine::handleEvents(sf::RenderWindow &window)

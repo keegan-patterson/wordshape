@@ -13,8 +13,9 @@ private:
 public:
     GameEngine() = default;
 
-    // Initialize the game engine with a window
+    // Initialize methods
     void init(sf::RenderWindow& window, bool debug_mode = false);
+    void buildBoundaries();
 
     // Handle events in the game loop
     void handleEvents(sf::RenderWindow& window);
