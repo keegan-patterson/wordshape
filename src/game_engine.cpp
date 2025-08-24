@@ -20,6 +20,7 @@ void GameEngine::buildBoundaries()
 
     this->entities.push_back(boundary1); 
     this->entities.push_back(boundary2); 
+    // I am a comment, delete me!
 }
 
 void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
