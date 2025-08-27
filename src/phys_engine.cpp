@@ -21,13 +21,12 @@ PhysItem::PhysItem(Type item_type, std::string font_path){
         // Debugging aabbs
         rectangle.setOutlineColor(sf::Color::Red);
         rectangle.setOutlineThickness(1);
-        rectangle.setFillColor(sf::Color::Transparent );
-    } else if (item_type == Type::Obstacle) {
-        definePolygonRectangle({{-960, 5}, {960, 5}, {960, -5}, {-960, -5}});
-        // rectangle.setSize(sf::Vector2f(100, 50));
-        rectangle.setOutlineColor(sf::Color::Red);
-        rectangle.setOutlineThickness(5);
-        rectangle.setFillColor(sf::Color::Red);
+        rectangle.setFillColor(sf::Color::Transparent);
+    } if(item_type == Type::Obstacle) {
+        // Debugging aabbs
+        rectangle.setOutlineColor(sf::Color::Blue);
+        rectangle.setOutlineThickness(1);
+        rectangle.setFillColor(sf::Color::Transparent);
     }
 }
 

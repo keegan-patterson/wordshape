@@ -93,7 +93,8 @@ public:
         polygon.setPoint(3, points[3]);
         polygon.setPoint(4, points[0]); // Close the polygon
         polygon.setFillColor(sf::Color::Green);
-        polygon.setOutlineColor(sf::Color::Black);
+        polygon.setOutlineColor(sf::Color::Green);
+        polygon.setOutlineThickness(5);
     }
 
     sf::Vector2f getProjection(const sf::Vector2f &axis) const
