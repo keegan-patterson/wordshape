@@ -2,44 +2,48 @@
 
 void GameEngine::buildBoundaries()
 {
+    // Floor
     PhysItem *boundary1 = new PhysItem(PhysItem::Type::Obstacle);
-    boundary1->position = {0, 1000};
+    boundary1->position = {10, 1000};
     boundary1->velocity = {0, 0};
-    boundary1->setAABB({-960, -5}, {960, 5});
-    boundary1->mass = 1000000.0f;       
-    boundary1->restitution = 0.5f;      
+    boundary1->setAABB({0, 0}, {940, 10});
+    boundary1->mass = 1000000.0f;
+    boundary1->restitution = 0.5f;
     boundary1->base_aabb.is_set = true;
-    boundary1->definePolygonRectangle({{-960, -5}, {960, -5}, {960, 5}, {-960, 5}});
+    boundary1->definePolygonRectangle({{0, 0}, {940, 0}, {940, 10}, {0, 10}});
 
+    // Left wall
     PhysItem *boundary2 = new PhysItem(PhysItem::Type::Obstacle);
-    boundary2->position = {10, 0}; 
+    boundary2->position = {10, 11};
     boundary2->velocity = {0, 0};
-    boundary2->setAABB({-5, -490}, {5, 490});
-    boundary2->mass = 1000000.0f;       
-    boundary2->restitution = 0.5f;      
+    boundary2->setAABB({0, 0}, {10, 940});
+    boundary2->mass = 1000000.0f;
+    boundary2->restitution = 0.5f;
     boundary2->base_aabb.is_set = true;
-    boundary2->definePolygonRectangle({{-5, -490}, {5, -490}, {5, 490}, {-5, 490}});
+    boundary2->definePolygonRectangle({{0, 0}, {10, 0}, {10, 940}, {0, 940}});
 
+    // Right wall
     PhysItem *boundary3 = new PhysItem(PhysItem::Type::Obstacle);
-    boundary3->position = {970, 490};
+    boundary3->position = {940, 11};
     boundary3->velocity = {0, 0};
-    boundary3->setAABB({-5, -490}, {5, 490});
+    boundary3->setAABB({0, 0}, {10, 940});
     boundary3->mass = 1000000.0f;
     boundary3->restitution = 0.5f;
     boundary3->base_aabb.is_set = true;
-    boundary3->definePolygonRectangle({{-5, -490}, {5, -490}, {5, 490}, {-5, 490}});
+    boundary3->definePolygonRectangle({{0, 0}, {10, 0}, {10, 940}, {0, 940}});
 
+    // Ceiling
     PhysItem *boundary4 = new PhysItem(PhysItem::Type::Obstacle);
-    boundary4->position = {0,0};
+    boundary4->position = {10, 0};
     boundary4->velocity = {0, 0};
-    boundary4->setAABB({-960, -5}, {960, 5});
+    boundary4->setAABB({0, 0}, {940, 10});
     boundary4->mass = 1000000.0f;
     boundary4->restitution = 0.5f;
     boundary4->base_aabb.is_set = true;
-    boundary4->definePolygonRectangle({{-960, -5}, {960, -5}, {960, 5}, {-960, 5}});
+    boundary4->definePolygonRectangle({{0, 0}, {940, 0}, {940, 10}, {0, 10}});
 
-    this->entities.push_back(boundary1); 
-    this->entities.push_back(boundary2); 
+    this->entities.push_back(boundary1);
+    this->entities.push_back(boundary2);
     this->entities.push_back(boundary3);
     this->entities.push_back(boundary4);
 }
@@ -57,13 +61,13 @@ void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
 
     PhysItem *item1 = new PhysItem(PhysItem::Type::TextBlock);
     item1->starting_position = {50, 100};
-    item1->starting_velocity = {20, 0};
-    item1->setAABB({-50, 0}, {50, 100});
+    item1->starting_velocity = {200, -30};
+    item1->setAABB({0, 0}, {110, 100});
 
     PhysItem *item2 = new PhysItem(PhysItem::Type::TextBlock);
     item2->starting_position = {300, 100};
     item2->starting_velocity = {-20, 0};
-    item2->setAABB({-50, 0}, {50, 100});
+    item2->setAABB({0, 0}, {110, 100});
 
     this->entities.push_back(item1); // Add the item to the list of entities
     this->entities.push_back(item2); // Add the item to the list of entities
@@ -119,14 +123,16 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                     if (mtv.has_value())
                     {
                         // Move the items apart based on the minimum translation vector
-                        if(item->item_type != PhysItem::Type::Obstacle){
+                        if (item->item_type != PhysItem::Type::Obstacle)
+                        {
                             item->velocity += *mtv;
                         }
-                        if(other_item->item_type != PhysItem::Type::Obstacle){
+                        if (other_item->item_type != PhysItem::Type::Obstacle)
+                        {
                             other_item->velocity -= *mtv;
                         }
                     }
-                    //phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
+                    // phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
                 }
             }
         }
