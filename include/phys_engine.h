@@ -147,7 +147,6 @@ public:
 
 class PhysEngine
 {
-    int OverlappingAxis(AABB a, AABB b);
     sf::Vector2f NormalVectorFromAxis(int axis);
 
 public:
@@ -164,7 +163,7 @@ public:
         item->position += ((item->velocity + initialVelocity) / 2.0f) * deltaTime.asSeconds();
     }
 
-    void ResolveCollision(PhysItem *A, PhysItem *B)
+    /*void ResolveCollision(PhysItem *A, PhysItem *B)
     {
         // Calculate relative velocity
         sf::Vector2f rv = B->velocity - A->velocity;
@@ -200,7 +199,7 @@ public:
         sf::Vector2f impulse = j * normal;
         A->velocity -= 1 / A->mass * impulse;
         B->velocity += 1 / B->mass * impulse;
-    }
+    }*/
 
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {

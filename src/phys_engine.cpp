@@ -45,18 +45,4 @@ bool PhysEngine::AABBvsAABB(AABB a, AABB b)
     // No separating axis found, therefore there is at least one overlapping axis
     return true;
 }
-
-// This will be replaced with SAT
-int PhysEngine::OverlappingAxis(AABB a, AABB b){
-    return 4;
-}
-
-sf::Vector2f PhysEngine::NormalVectorFromAxis(int axis) {
-    switch (axis) {
-        case 1: return {1, 0}; // A overlaps B on X axis, A is to the left of B
-        case 2: return {0, 1}; // A overlaps B on Y axis, A is above B
-        case 3: return {-1, 0}; // B overlaps A on X axis, B is to the left of A
-        case 4: return {0, -1}; // B overlaps A on Y axis, B is above A
-        default: return {0, 0}; // No valid axis
-    }
 }

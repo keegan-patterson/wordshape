@@ -1,4 +1,5 @@
 #include "game_engine.h"
+#include <SFML/Graphics.hpp>
 
 void GameEngine::buildBoundaries()
 {
@@ -46,15 +47,14 @@ void GameEngine::buildBoundaries()
     this->entities.push_back(boundary2);
     this->entities.push_back(boundary3);
     this->entities.push_back(boundary4);
-    // Hi
 }
 
-void GameEngine::init(sf::RenderWindow &window, bool debug_mode)
+void GameEngine::init(sf::RenderWindow &window, GameEngine::debug_options debug_settings)
 {
     window.setFramerateLimit(144);
     window.setVerticalSyncEnabled(true);
 
-    this->debug_mode = debug_mode; // Set the debug mode based on the parameter
+    this->debug_settings = debug_settings; // Set the debug mode based on the parameter
 
     this->entities.clear(); // Clear any existing entities
 
@@ -159,10 +159,23 @@ void GameEngine::draw(sf::RenderWindow &window)
         entity->polygon.setPosition(entity->position);
         window.draw(entity->polygon); // Draw the polygon representation of the item
 
-        if (debug_mode)
+        if (debug_settings.draw_aabbs)
         {
             entity->rectangle.setPosition(entity->position);
             window.draw(entity->rectangle); // Draw the rectangle representation of the item
+        }
+        if (debug_settings.draw_velocity_vectors)
+        {
+            sf::VertexArray line(sf::PrimitiveType::Lines, 2);
+            // Set the first point (start of the line)
+            line[0].position = entity->position;
+            line[0].color = sf::Color::Red;
+
+            // Set the second point (end of the line)
+            line[1].position = entity->position + entity->velocity;
+            line[1].color = sf::Color::Red;
+
+            window.draw(line);
         }
     }
     window.display();

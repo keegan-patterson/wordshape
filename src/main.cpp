@@ -7,7 +7,10 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({1920u, 1080u}), "CMake SFML Project");
 
     GameEngine game_engine;
-    game_engine.init(window, true);
+    GameEngine::debug_options debug_options;
+    debug_options.draw_aabbs = true;
+    debug_options.draw_velocity_vectors = true;
+    game_engine.init(window, debug_options);
 
     sf::Clock *clock = new sf::Clock(); // Create a clock to track time
     PhysEngine *phys_engine = new PhysEngine({0, 9.81f}); // Initialize physics engine with gravity

@@ -6,15 +6,22 @@
 
 class GameEngine
 {
+public:
+struct debug_options
+{
+    bool draw_aabbs = false;
+    bool draw_velocity_vectors = false;
+};
+
 private:
     std::vector<PhysItem*> entities; // Comprehensive list of game objects with physics
-    bool debug_mode = false;
+    debug_options debug_settings;
 
 public:
     GameEngine() = default;
 
     // Initialize methods
-    void init(sf::RenderWindow& window, bool debug_mode = false);
+    void init(sf::RenderWindow& window, GameEngine::debug_options debug_settings);
     void buildBoundaries();
 
     // Handle events in the game loop
