@@ -45,4 +45,3 @@ bool PhysEngine::AABBvsAABB(AABB a, AABB b)
     // No separating axis found, therefore there is at least one overlapping axis
     return true;
 }
-}
