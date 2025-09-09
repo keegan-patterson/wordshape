@@ -243,6 +243,7 @@ public:
         // loop over the axes2
         for (int i = 0; i < axes2.size(); i++)
         {
+            // TEST HERE
             sf::Vector2f axis = axes2[i];
             // project both shapes onto the axis
             sf::Vector2f p1 = shape1.getProjection(axis);
