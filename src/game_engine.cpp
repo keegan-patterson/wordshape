@@ -63,12 +63,12 @@ void GameEngine::init(sf::RenderWindow &window, GameEngine::debug_options debug_
     PhysItem *item1 = new PhysItem(PhysItem::Type::TextBlock);
     item1->starting_position = {50, 100};
     item1->starting_velocity = {200, -30};
-    item1->setAABB({0, 0}, {110, 100});
+    item1->setAABB({0, 0}, {100, 100});
 
     PhysItem *item2 = new PhysItem(PhysItem::Type::TextBlock);
     item2->starting_position = {300, 100};
     item2->starting_velocity = {-20, 0};
-    item2->setAABB({0, 0}, {110, 100});
+    item2->setAABB({0, 0}, {100, 100});
 
     this->entities.push_back(item1); // Add the item to the list of entities
     this->entities.push_back(item2); // Add the item to the list of entities

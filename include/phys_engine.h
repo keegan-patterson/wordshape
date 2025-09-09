@@ -105,7 +105,7 @@ public:
         {
             sf::Vector2f point = polygon.getPoint(i);
             point = position + point; // Transform point to world coordinates
-            float projection = PhysHelpers::dot(point, axis);
+            float projection = PhysHelpers::dot(point, axis.normalized());
             if (i == 0)
             {
                 min = projection;
@@ -243,7 +243,6 @@ public:
         // loop over the axes2
         for (int i = 0; i < axes2.size(); i++)
         {
-            // TEST HERE
             sf::Vector2f axis = axes2[i];
             // project both shapes onto the axis
             sf::Vector2f p1 = shape1.getProjection(axis);
