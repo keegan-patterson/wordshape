@@ -104,6 +104,13 @@ void GameEngine::handleEvents(sf::RenderWindow &window)
     }
 }
 
+float findMTVConstant(sf::Vector2f velocity, sf::Vector2f mtv){
+    float velocity_magnitude = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    float mtv_magnitude = std::sqrt(mtv.x * mtv.x + mtv.y * mtv.y);
+    if (mtv_magnitude == 0) return 0.0f; // Prevent division by zero
+    return velocity_magnitude / mtv_magnitude;
+}
+
 void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
 {
     // This function can be used to update the game state
@@ -126,11 +133,13 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                         // Move the items apart based on the minimum translation vector
                         if (item->item_type != PhysItem::Type::Obstacle)
                         {
-                            item->velocity += *mtv;
+                            // item->velocity += *mtv;
+                            item->velocity += *mtv * findMTVConstant(item->velocity, *mtv);
                         }
                         if (other_item->item_type != PhysItem::Type::Obstacle)
                         {
-                            other_item->velocity -= *mtv;
+                            // other_item->velocity -= *mtv;
+                            other_item->velocity += (*mtv) * findMTVConstant(item->velocity, (*mtv)) * -1.0f;
                         }
                     }
                     // phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
