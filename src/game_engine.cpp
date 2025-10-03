@@ -105,6 +105,7 @@ void GameEngine::handleEvents(sf::RenderWindow &window)
 }
 
 float findMTVConstant(sf::Vector2f velocity, sf::Vector2f mtv){
+    // This is vibe coding hallucination
     float velocity_magnitude = std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
     float mtv_magnitude = std::sqrt(mtv.x * mtv.x + mtv.y * mtv.y);
     if (mtv_magnitude == 0) return 0.0f; // Prevent division by zero
