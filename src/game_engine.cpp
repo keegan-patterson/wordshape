@@ -111,6 +111,8 @@ float findMTVConstant(sf::Vector2f velocity, sf::Vector2f mtv){
     return velocity_magnitude / mtv_magnitude;
 }
 
+void print_int() {  int a; std::cout << a << std::endl; }
+
 void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
 {
     // This function can be used to update the game state
@@ -121,7 +123,7 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
         {
             if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
             {
-                // std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
+                std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
                 if (item->base_aabb.is_set && other_item->base_aabb.is_set)
                 {
                     std::cout << "Collision detected between items at positions: "
