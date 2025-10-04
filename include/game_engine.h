@@ -15,7 +15,7 @@ struct debug_options
 
 private:
     std::vector<PhysItem*> entities; // Comprehensive list of game objects with physics
-    debug_options debug_settings;
+    debug_options debug_settings; // Debug settings for rendering
 
 public:
     GameEngine() = default;
