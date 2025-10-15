@@ -112,8 +112,6 @@ float findMTVConstant(sf::Vector2f velocity, sf::Vector2f mtv){
     return velocity_magnitude / mtv_magnitude;
 }
 
-void print_int() {  int a; std::cout << a << std::endl; }
-
 void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
 {
     // This function can be used to update the game state
@@ -130,7 +128,7 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                     std::cout << "Collision detected between items at positions: "
                               << item->position.x << ", " << item->position.y << " and "
                               << other_item->position.x << ", " << other_item->position.y << std::endl;
-                    std::optional<sf::Vector2f> mtv = phys_engine->SeparatingAxisTheorem(*item, *other_item);
+                    /*std::optional<sf::Vector2f> mtv = phys_engine->SeparatingAxisTheorem(*item, *other_item);
                     if (mtv.has_value())
                     {
                         // Move the items apart based on the minimum translation vector
@@ -144,8 +142,8 @@ void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
                             // other_item->velocity -= *mtv;
                             other_item->velocity += (*mtv) * findMTVConstant(item->velocity, (*mtv)) * -1.0f;
                         }
-                    }
-                    // phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
+                    }*/
+                    phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
                 }
             }
         }

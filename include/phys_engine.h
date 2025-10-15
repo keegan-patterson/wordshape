@@ -45,7 +45,7 @@ public:
     sf::Vector2f starting_position; // Position of the item in the world
     sf::Vector2f velocity;          // Velocity vector for the item
     sf::Vector2f starting_velocity; // Velocity vector for the item
-    float restitution = 0.5f;       // Coefficient of restitution for the item
+    float restitution = 1.0f;       // Coefficient of restitution for the item
     float mass = 1.0f;              // Mass of the item, default is 1.0f
 
     sf::Font *font = nullptr;
@@ -163,7 +163,7 @@ public:
         item->position += ((item->velocity + initialVelocity) / 2.0f) * deltaTime.asSeconds();
     }
 
-    /*void ResolveCollision(PhysItem *A, PhysItem *B)
+    void ResolveCollision(PhysItem *A, PhysItem *B)
     {
         // Calculate relative velocity
         sf::Vector2f rv = B->velocity - A->velocity;
@@ -171,22 +171,17 @@ public:
         // Calculate relative velocity in terms of the normal direction
         // TODO: This needs to be replaced with SAT (Separating Axis Theorem)
         sf::Vector2f normal;
-        if (A->item_type == PhysItem::Type::Obstacle || B->item_type == PhysItem::Type::Obstacle)
-        {
-            // Resolve collison with obstacles differently
-            // Find which side collision is happening on
-            int axis = OverlappingAxis(A->getAABB(), B->getAABB());
-            normal = NormalVectorFromAxis(axis);
-        }
-        else
-        {
-            normal = (B->getAABB().getCenter() - A->getAABB().getCenter()).normalized();
+        normal = SeparatingAxisTheorem(*A, *B).value_or(sf::Vector2f(0,0));
+        if(normal == sf::Vector2f(0,0)){
+            return; // No collision to resolve
+        } else {
+            normal = normal.normalized();
         }
         float velAlongNormal = PhysHelpers::dot(rv, normal);
 
         // Do not resolve if velocities are separating
-        if (velAlongNormal > 0)
-            return;
+        //if (velAlongNormal > 0)
+        //    return;
 
         // Calculate restitution
         float e = std::min(A->restitution, B->restitution);
@@ -199,7 +194,7 @@ public:
         sf::Vector2f impulse = j * normal;
         A->velocity -= 1 / A->mass * impulse;
         B->velocity += 1 / B->mass * impulse;
-    }*/
+    }
 
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
