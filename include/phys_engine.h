@@ -169,7 +169,6 @@ public:
         sf::Vector2f rv = B->velocity - A->velocity;
 
         // Calculate relative velocity in terms of the normal direction
-        // TODO: This needs to be replaced with SAT (Separating Axis Theorem)
         sf::Vector2f normal;
         normal = SeparatingAxisTheorem(*A, *B).value_or(sf::Vector2f(0,0));
         if(normal == sf::Vector2f(0,0)){
@@ -194,6 +193,21 @@ public:
         sf::Vector2f impulse = j * normal;
         A->velocity -= 1 / A->mass * impulse;
         B->velocity += 1 / B->mass * impulse;
+
+        // Friction work - In progress
+
+        // Recalculate relative velocity after normal impulse
+        rv = B->velocity - A->velocity;
+
+        // Get tangent vector
+        sf::Vector2f tangent = rv - PhysHelpers::dot(rv, normal) * normal;
+        tangent = tangent.normalized();
+
+        // Solve for friction impulse magnitude
+        float jt = -PhysHelpers::dot(rv, tangent);
+        jt /= 1 / (A->mass + 1 / B->mass);
+
+        // TODO: Couloumb's law for friction
     }
 
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
