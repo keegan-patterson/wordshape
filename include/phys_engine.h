@@ -47,6 +47,8 @@ public:
     sf::Vector2f starting_velocity; // Velocity vector for the item
     float restitution = 1.0f;       // Coefficient of restitution for the item
     float mass = 1.0f;              // Mass of the item, default is 1.0f
+    float staticFrictionCoefficient = 0.5f; // Static friction coefficient for the item
+    float dynamicFrictionCoefficient = 0.3f; // Dynamic friction coefficient for the item
 
     sf::Font *font = nullptr;
     sf::Text *text = nullptr; // Text representation of the item, if applicable
@@ -205,9 +207,28 @@ public:
 
         // Solve for friction impulse magnitude
         float jt = -PhysHelpers::dot(rv, tangent);
-        jt /= 1 / (A->mass + 1 / B->mass);
+        jt /= (1 / A->mass + 1 / B->mass);
 
-        // TODO: Couloumb's law for friction
+        // Coulomb's law to determine whether to use static or dynamic friction
+        // Get the average static friction coefficients
+        float mu = (A->staticFrictionCoefficient + B->staticFrictionCoefficient) / 2.0f;
+
+        // Clamp the friction impulse
+        sf::Vector2f frictionImpulse;
+        if (std::abs(jt) < j * mu)
+        {
+            frictionImpulse = jt * tangent;
+        }
+        else
+        {
+            // Get the average dynamic friction coefficients
+            mu = (A->dynamicFrictionCoefficient + B->dynamicFrictionCoefficient) / 2.0f;
+            frictionImpulse = -j * tangent * mu;
+        }
+
+        // Apply friction impulse
+        A->velocity -= 1 / A->mass * frictionImpulse;
+        B->velocity += 1 / B->mass * frictionImpulse;
     }
 
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
