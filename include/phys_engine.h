@@ -45,10 +45,10 @@ public:
     sf::Vector2f starting_position; // Position of the item in the world
     sf::Vector2f velocity;          // Velocity vector for the item
     sf::Vector2f starting_velocity; // Velocity vector for the item
-    float restitution = 1.0f;       // Coefficient of restitution for the item
+    float restitution = 0.5f;       // Coefficient of restitution for the item
     float mass = 1.0f;              // Mass of the item, default is 1.0f
-    float staticFrictionCoefficient = 0.5f; // Static friction coefficient for the item
-    float dynamicFrictionCoefficient = 0.3f; // Dynamic friction coefficient for the item
+    float staticFrictionCoefficient = 0.3f; // Static friction coefficient for the item
+    float dynamicFrictionCoefficient = 0.2f; // Dynamic friction coefficient for the item
 
     sf::Font *font = nullptr;
     sf::Text *text = nullptr; // Text representation of the item, if applicable
@@ -167,145 +167,93 @@ public:
 
     void ResolveCollision(PhysItem *A, PhysItem *B)
     {
-        // Calculate relative velocity
         sf::Vector2f rv = B->velocity - A->velocity;
 
-        // Calculate relative velocity in terms of the normal direction
-        sf::Vector2f normal;
-        normal = SeparatingAxisTheorem(*A, *B).value_or(sf::Vector2f(0,0));
-        if(normal == sf::Vector2f(0,0)){
-            return; // No collision to resolve
-        } else {
-            normal = normal.normalized();
-        }
+        auto mtvOpt = SeparatingAxisTheorem(*A, *B);
+        if (!mtvOpt.has_value())
+            return;
+
+        sf::Vector2f normal = mtvOpt.value().normalized();
         float velAlongNormal = PhysHelpers::dot(rv, normal);
 
-        // Do not resolve if velocities are separating
-        //if (velAlongNormal > 0)
-        //    return;
+        if (velAlongNormal > 0)
+            return;
 
-        // Calculate restitution
         float e = std::min(A->restitution, B->restitution);
 
-        // Calculate impulse scalar
-        float j = -(1 + e) * velAlongNormal;
-        j /= 1 / A->mass + 1 / B->mass;
+        float j = -(1.0f + e) * velAlongNormal;
+        j /= (1.0f / A->mass + 1.0f / B->mass);
 
-        // Apply impulse
         sf::Vector2f impulse = j * normal;
-        A->velocity -= 1 / A->mass * impulse;
-        B->velocity += 1 / B->mass * impulse;
-
-        // Friction work - In progress
+        A->velocity -= (1.0f / A->mass) * impulse;
+        B->velocity += (1.0f / B->mass) * impulse;
 
         // Recalculate relative velocity after normal impulse
         rv = B->velocity - A->velocity;
 
-        // Get tangent vector
         sf::Vector2f tangent = rv - PhysHelpers::dot(rv, normal) * normal;
+        if (tangent.lengthSquared() < 1e-10f)
+            return; // No tangential component, skip friction
+
         tangent = tangent.normalized();
 
-        // Solve for friction impulse magnitude
         float jt = -PhysHelpers::dot(rv, tangent);
-        jt /= (1 / A->mass + 1 / B->mass);
+        jt /= (1.0f / A->mass + 1.0f / B->mass);
 
-        // Coulomb's law to determine whether to use static or dynamic friction
-        // Get the average static friction coefficients
-        float mu = (A->staticFrictionCoefficient + B->staticFrictionCoefficient) / 2.0f;
+        float muS = (A->staticFrictionCoefficient + B->staticFrictionCoefficient) / 2.0f;
+        float muD = (A->dynamicFrictionCoefficient + B->dynamicFrictionCoefficient) / 2.0f;
 
-        // Clamp the friction impulse
         sf::Vector2f frictionImpulse;
-        if (std::abs(jt) < j * mu)
+        if (std::abs(jt) < j * muS)
         {
             frictionImpulse = jt * tangent;
         }
         else
         {
-            // Get the average dynamic friction coefficients
-            mu = (A->dynamicFrictionCoefficient + B->dynamicFrictionCoefficient) / 2.0f;
-            frictionImpulse = -j * tangent * mu;
+            frictionImpulse = std::copysign(1.0f, jt) * j * muD * tangent;
         }
 
-        // Apply friction impulse
-        A->velocity -= 1 / A->mass * frictionImpulse;
-        B->velocity += 1 / B->mass * frictionImpulse;
+        A->velocity -= (1.0f / A->mass) * frictionImpulse;
+        B->velocity += (1.0f / B->mass) * frictionImpulse;
     }
 
     std::optional<sf::Vector2f> SeparatingAxisTheorem(PhysItem shape1, PhysItem shape2)
     {
-
         float overlap = std::numeric_limits<float>::max();
         sf::Vector2f smallest;
+
         std::vector<sf::Vector2f> axes1 = shape1.getTestableAxes();
         std::vector<sf::Vector2f> axes2 = shape2.getTestableAxes();
-        // loop over the axes1
-        for (int i = 0; i < axes1.size(); i++)
+
+        auto testAxes = [&](const std::vector<sf::Vector2f>& axes) -> bool
         {
-            sf::Vector2f axis = axes1[i];
-            // project both shapes onto the axis
-            sf::Vector2f p1 = shape1.getProjection(axis);
-            sf::Vector2f p2 = shape2.getProjection(axis);
-            // do the projections overlap?
-            if (p1.x >= p2.y || p2.x >= p1.y)
+            for (const auto& axis : axes)
             {
-                // then we can guarantee that the shapes do not overlap
-                return std::optional<sf::Vector2f>();            
-            }
-            else
-            {
-                // get the overlap
-                float o;
-                if(p1.x < p2.y){
-                    o = p2.y - p1.x;
-                } else {
-                    o = p1.y - p2.x;
-                }
-                
-                // check for minimum
+                sf::Vector2f p1 = shape1.getProjection(axis);
+                sf::Vector2f p2 = shape2.getProjection(axis);
+
+                if (p1.x >= p2.y || p2.x >= p1.y)
+                    return false; // Separating axis found, no collision
+
+                float o = std::min(p1.y, p2.y) - std::max(p1.x, p2.x);
+
                 if (o < overlap)
                 {
-                    // then set this one as the smallest
                     overlap = o;
                     smallest = axis;
                 }
             }
-        }
-        // loop over the axes2
-        for (int i = 0; i < axes2.size(); i++)
-        {
-            sf::Vector2f axis = axes2[i];
-            // project both shapes onto the axis
-            sf::Vector2f p1 = shape1.getProjection(axis);
-            sf::Vector2f p2 = shape2.getProjection(axis);
-            // do the projections overlap?
-            if (p1.x >= p2.y || p2.x >= p1.y)
-            {
-                // then we can guarantee that the shapes do not overlap
-                return std::optional<sf::Vector2f>();            
-            }
-            else
-            {
-                // get the overlap
-                float o;
-                if(p1.x < p2.y){
-                    o = p2.y - p1.x;
-                } else {
-                    o = p1.y - p2.x;
-                }
-                
-                // check for minimum
-                if (o < overlap)
-                {
-                    // then set this one as the smallest
-                    overlap = o;
-                    smallest = axis;
-                }
-            }
-        }
+            return true;
+        };
+
+        if (!testAxes(axes1) || !testAxes(axes2))
+            return std::nullopt;
+
+        sf::Vector2f direction = shape2.position - shape1.position;
         sf::Vector2f mtv = smallest.normalized() * overlap;
-        // if we get here then we know that every axis had overlap on it
-        // so we can guarantee an intersection
-        // std::cout << "SAT: Overlap found with minimum translation vector: " << mtv.x << ", " << mtv.y << std::endl;
+        if (PhysHelpers::dot(direction, mtv) < 0)
+            mtv = -mtv;
+
         return mtv;
     }
 };

@@ -106,24 +106,27 @@ void GameEngine::handleEvents(sf::RenderWindow &window)
 
 void GameEngine::tick(PhysEngine *phys_engine, sf::Clock *clock)
 {
-    // This function can be used to update the game state
     auto deltaTime = clock->restart();
-    for (auto item : entities)
+
+    for (size_t i = 0; i < entities.size(); i++)
     {
-        for (auto other_item : entities)
+        for (size_t j = i + 1; j < entities.size(); j++)
         {
-            if (item != other_item && phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
+            PhysItem *item = entities[i];
+            PhysItem *other_item = entities[j];
+
+            if (phys_engine->AABBvsAABB(item->getAABB(), other_item->getAABB()))
             {
-                std::cout << "Checking collision between item at position: " << other_item->position.x << ", " << other_item->position.y << std::endl;
                 if (item->base_aabb.is_set && other_item->base_aabb.is_set)
                 {
-                    phys_engine->ResolveCollision(item, other_item); // Resolve collision between items
+                    phys_engine->ResolveCollision(item, other_item);
                 }
             }
         }
-        if (item->item_type == PhysItem::Type::TextBlock)
+
+        if (entities[i]->item_type == PhysItem::Type::TextBlock)
         {
-            phys_engine->applyGravity(item, deltaTime); // Apply gravity to each item
+            phys_engine->applyGravity(entities[i], deltaTime);
         }
     }
 }
