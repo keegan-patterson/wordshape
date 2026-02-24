@@ -100,6 +100,17 @@ void GameEngine::handleEvents(sf::RenderWindow &window)
                     i++;
                 }
             }
+        } if (event->is<sf::Event::MouseButtonPressed>())
+        {
+            const sf::Event::MouseButtonPressed *m_event = event->getIf<sf::Event::MouseButtonPressed>();
+            if (m_event->button == sf::Mouse::Button::Left)
+            {
+                PhysItem *new_item = new PhysItem(PhysItem::Type::TextBlock);
+                new_item->position = sf::Vector2f(m_event->position.x, m_event->position.y);
+                new_item->velocity = {0, 0};
+                new_item->setAABB({0, 0}, {100, 100});
+                this->entities.push_back(new_item);
+            }
         }
     }
 }
