@@ -109,6 +109,7 @@ void GameEngine::handleEvents(sf::RenderWindow &window)
                 new_item->position = sf::Vector2f(m_event->position.x, m_event->position.y);
                 new_item->velocity = {0, 0};
                 new_item->setAABB({0, 0}, {100, 100});
+                new_item->base_aabb.is_set = true;              // Mark AABB as set
                 this->entities.push_back(new_item);
             }
         }
