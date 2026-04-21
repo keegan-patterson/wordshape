@@ -8,8 +8,8 @@ int main()
 
     GameEngine game_engine;
     GameEngine::debug_options debug_options;
-    debug_options.draw_aabbs = true;
-    debug_options.draw_velocity_vectors = true;
+    debug_options.draw_aabbs = false;
+    debug_options.draw_velocity_vectors = false;
     game_engine.init(window, debug_options);
 
     sf::Clock *clock = new sf::Clock(); // Create a clock to track time
