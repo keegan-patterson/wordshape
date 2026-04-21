@@ -13,7 +13,7 @@ int main()
     game_engine.init(window, debug_options);
 
     sf::Clock *clock = new sf::Clock(); // Create a clock to track time
-    PhysEngine *phys_engine = new PhysEngine({0, 100.0f}); // Initialize physics engine with gravity
+    PhysEngine *phys_engine = new PhysEngine({0, 105.0f}); // Initialize physics engine with gravity
 
     while (window.isOpen())
     {
